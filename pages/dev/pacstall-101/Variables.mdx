@@ -13,14 +13,13 @@ import { Callout } from 'nextra/components'
 | --------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | `pkgdir`        | Staging area for pacscripts                                        | `/usr/src/pacstall/${pkgname}`                                        |                                                                                           |
 | `srcdir`        | Download area for pacscripts and starting area for functions       | `/tmp/pacstall/${pkgname}~${pkgver}`                                  |                                                                                           |
-| `_archive`      | Directory of first source key                                      | `${srcdir}/location`, where `location` is directory of `${source[0]}` extracted | Deprecated for new scripts, unless defined explicitly in the pacscript.        |
 | `homedir`       | The home directory of the running user regardless of who calls it. | `~$USER/`                                                        |                                                                                           |
 | `git_pkgver`    | Commit hash of first source key                                    | e.g. `1a2b3c4d` | Only works if `$pkgname` ends in `-git`        |
 | `CARCH`         | Current architecture running                                       | `$ dpkg --print-architecture`                                         |                                                                                           |
 | `NCPU`          | User overridable core count                                        | `$ nproc` or set by `${PACSTALL_BUILD_CORES}`                         |                                                                                           |
 | `DISTRO`        | Value of the current (parent) distro and codename                           | `$base:$codename`, such as `ubuntu:jammy` or `debian:bookworm`        | Should only be used inside of packaging functions. Use distro enhanced variables instead. If current distro is based on `ubuntu` or `debian`, this will be the version it is based on. |
 | `CDISTRO`        | Value of the current distro and codename                           | `$base:$codename`, such as `ubuntu:jammy` or `linuxmint:elsie`        | Should only be used inside of packaging functions. Use distro enhanced variables instead, based on `DISTRO`. If current distro is `ubuntu` or `debian`, this will usually be the same as `CDISTRO`. |
-| `PACSTALL_USER` | User who invokes pacstall                                          | `$ logname 2> /dev/null \|\| echo "${SUDO_USER:-${USER:-$(whoami)}}`  |                                                                                           |
+| `PACSTALL_USER` | User who invokes pacstall                                          | `$ logname 2> /dev/null \|\| echo "${SUDO_USER:-${USER:-$(whoami)}}"`  |                                                                                           |
 
 ---
 
@@ -59,7 +58,12 @@ If the `repology` variable isn't present in the pacscript, Pacup will refuse to 
 
 #### `arch`
 
-This array is used to define what architectures your pacscripts will work on. If your package works on any architecture, leave it out completely, or if you really want to, put `arch=('any')` or `arch=('all')`.
+This array is used to define what architectures your pacscripts will work on. Besides the usual architecture specifiers, you have available `any` and `all`:
+
+| Name | Function |
+|------|----------|
+| `any` | Package can be compiled on *any* system, but will only run on the compiled architecture (compiled programs) |
+| `all` | Package can run on *all* systems, regardless of architecture (scripts usually) |
 
 Two variables, `$CARCH` and `$AARCH` are also available to you, and are linked to the current running architecture. You can get the value that `$CARCH` would be on your system by running `dpkg --print-architecture`, and `$AARCH` by running `echo $HOSTTYPE` (with two exceptions, starred below). These are differentiated in the given list with `CARCH`/`AARCH` (if only one is listed, the variables are equal).
 
@@ -161,7 +165,10 @@ This is an array with URLs as elements. These will be downloaded by pacstall bef
 Inside a `source` array, you have the following schema:
 
 - Elements can be optionally prefixed with `dest::` which will instruct pacstall to download (or copy) that archive to the name `dest`.
-    - Note that `dest` is **not** where the final *extracted* output of a download would be, but where the download is *going to*.
+    - Note that `dest` is **not** where the final *extracted* output of a download would be, but where the download is *going to*. For the final extracted location, you may prefix with `@to_location::` or `dest@to_location::` instead.
+        - For extractions that result in only one file/directory in the head, this will rename that head level item.
+        - For extractions that result in more than one file/directory in the head, all items from the extraction will be placed into this location.
+        - For `.git` and non-extractable sources, `dest` already performs this function, so this syntax is ignored.
 - Git sources must have their URL prefixed with `git+` if the URL does not end with `.git`.
 - Git sources may end in `#branch=`, `#tag=`, or `#commit=`, followed by their respective contents.
     - If this is not provided, then it is assumed to clone from `HEAD` of the repository. This is often the `master` or `main` branch.
@@ -173,7 +180,7 @@ Inside a `source` array, you have the following schema:
 An example with every option added (not functional) would look like:
 
 ```bash
-custom-location.zip::git+file://example.com/archive.tar.xz?h=file#branch=master
+custom-location.zip@extracted_location::git+file://example.com/archive.tar.xz?h=file#branch=master
 ```
 
 Extraction method is calculated from the initial url basename and not `dest`, so an example like above would still extract with the correct method. The following extensions can be extracted by default:
@@ -237,7 +244,7 @@ source=(
   "rpk::https://github.com/rhino-linux/rhino-pkg.git"
   "https://github.com/tamton-aquib/stuff.nvim.git"
 )
-nosubmodules=("rpk")
+nosubmodules=("rpk" "stuff.nvim")
 ```
 
 #### `noextract`
@@ -246,7 +253,7 @@ Use this array like you would with [nosubmodules](#nosubmodules) except this is 
 
 #### `backup`
 
-In dpkg, files in `/etc` are set as "configuration files", meaning that by default they will not be removed when one runs `apt remove pkg`, but will with `apt purge pkg`. This array should be filled with file paths (without the leading slash), and every file in it will be set as a configuration file. Do not include any files that will be unpacked in `/etc`, as that is already handled by dpkg. There is one special exception you may add to a key, and that is a leading `r:`, which instructs dpkg to **delete** that file on the next upgrade. If you include `r:` in a key, that file _cannot_ appear in the binary package.
+In dpkg, files in `/etc` are set as "configuration files", meaning that by default they will not be removed when one runs `apt remove pkg`, but will with `apt purge pkg`. This array should be filled with file paths (without the leading slash), and every file in it will be set as a configuration file. Do not include any files that will be unpacked in `/etc`, as that is already handled by dpkg. There is one special exception you may add to a key, and that is a leading `r:`, which instructs dpkg to **delete** that file on the next upgrade (generally used for outdated config files). If you include `r:` in a key, that file _cannot_ appear in the binary package.
 
 #### `external_connection`
 
@@ -267,6 +274,13 @@ This is an array used to declare runtime dependencies of a package. As with [sou
    4. `pkg<version`
    5. `pkg=version`
 2. Dependencies can be alternative, so that if the first package cannot be found or it's dependency constraints cannot be satisfied, will attempt to find the alternative package: `pkg | pkg2`. These constraints apply to all dependency arrays, with the exception of [pacdeps](#pacdeps).
+
+Version guarding dependencies is usually a better method than using `incompatible`. Not only will users get an exact response detailing why their package will not build, but it opens up the package to be more installed-system-agnostic. Here is a non-exhaustive list of where each should be used and why:
+
+| Problem  | Version Guarding  | Incompatible  | Reason  |
+|:-:|:-:|:-:|---|
+| Outdated dependency on all distro $X versions  | ✅ | ❌ | An adventurous user could install that dependency on their system |
+| Package is intended for certain environments only (distro branding)  | ❌  | ✅  |  The user will now have to take extra steps to disable `incompatible`, meaning they must know about the package intent |
 
 #### `makedepends`
 
