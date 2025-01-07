@@ -52,4 +52,11 @@ jobs:
 
       - name: Upload to server
         run: |
-          scp -i ~/.ssh/id_ed25519 -rp out/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }}:${{ secrets.SSH_DIR }}"
+          SSH_LOCATION="${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }}"
+          if [ -n "${{ secrets.SSH_DIR }}" ]; then
+              ssh -i ~/.ssh/id_ed25519 "${SSH_LOCATION}" "rm -rf ${{ secrets.SSH_DIR }}/*"
+              scp -i ~/.ssh/id_ed25519 -rp out/* "${SSH_LOCATION}:${{ secrets.SSH_DIR }}"
+          else
+              echo "Error: SSH_DIR not set"
+              exit 1
+          fi
