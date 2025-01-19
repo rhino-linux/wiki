@@ -7,6 +7,67 @@ import { Callout } from 'nextra/components'
 
 # Tips for Wiki Pages
 
+## Guidelines and Best Practices
+Best practices for creating and maintaining content on the Rhino Linux wiki.
+
+### 1. Know Your Audience
+
+- **Diverse Skill Levels**: Linux users range from beginners to experts. Write in a way that is accessible to beginners but informative enough for advanced users.
+- **Be Neutral**: Avoid unnecessary jargon or assumptions about the reader’s background to ensure neutrality.
+
+### 2. Follow Wiki Standards
+
+- **Check the Style Guide**: Many Linux wikis, such as ours, have a style guide. Check it to ensure consistency in your writing.
+- **Stick to Structure**: Observe how existing pages are structured. Maintaining a uniform appearance makes the wiki easier to navigate.
+
+### 3. Be Clear and Concise
+
+- **Explain Steps Fully**: For example, instead of saying "Edit the config file," say:
+  ```bash
+  Open /etc/config in a text editor of your choice, such as nano or vim.
+     ```
+- **One Idea Per Section**: Stick to one idea per section to avoid overwhelming the reader.
+
+### 4. Provide Examples
+
+- **Tip**: Use real commands and expected outputs. For example:
+  ```bash
+  sudo apt update && sudo apt upgrade
+     ```
+- **Tip**: Explain what each command does to enhance understanding.
+
+### 5. Link Generously
+
+- **Note**: Include internal links to related wiki pages (e.g., "See the [Commands](https://wiki.rhinolinux.org/user/pacstall/commands) for details about Pacstall").
+- **Tip**: Use external links to reference trusted sources like official documentation or RFCs.
+
+### 6. Keep It Up-to-Date
+
+- **Warning**: Linux evolves rapidly. Revisit and revise pages regularly. Specify versions where applicable, e.g., "This applies to Rhino 2024.2."
+
+### 7. Use Consistent Formatting
+
+- **Tip**: Follow formatting standards:
+  - **Headings**: Use logical hierarchies (`#`, `##`, `###`).
+  - **Code Blocks**: Properly format terminal commands, configuration files, or scripts.
+  - **Bullet Points**: Use these for lists of options, steps, or pros/cons.
+
+### 8. Encourage Collaboration
+
+- **Tip**: Add a "To-Do" section if a page needs updates or expansion. Mark incomplete sections with a note like so:
+<Callout type="warning" emoji="⚠">
+   **This page is under construction.** Feel free to contribute!
+</Callout>
+
+### 9. Test Everything
+
+- **Warning**: Always run commands and follow steps yourself before publishing. Mistakes in Linux commands can break systems, so double-check every detail.
+
+### 10. Be Friendly and Encouraging
+
+- **Tip**: Use a welcoming tone, especially for beginners. For example:
+  "Don’t worry if this seems complex at first—follow along step by step, and you’ll get there!"
+
 ## Notice Boxes
 
 Notice boxes are an easy way to highlight important information in GitHub Flavored Markdown, using syntax like:
@@ -74,61 +135,3 @@ Now, you can use the following templates:
   **Danger:** Negative potential consequences of an action.
 </Callout>
 ```
-
-# Guidelines for Writing on the Rhino Linux Wiki
-Best practices for creating and maintaining content on the Rhino Linux wiki.
-
-## 1. Know Your Audience
-
-- **Diverse Skill Levels**: Linux users range from beginners to experts. Write in a way that is accessible to beginners but informative enough for advanced users.
-- **Be Neutral**: Avoid unnecessary jargon or assumptions about the reader’s background to ensure neutrality.
-
-## 2. Follow Wiki Standards
-
-- **Check the Style Guide**: Many Linux wikis, such as ours, have a style guide. Check it to ensure consistency in your writing.
-- **Stick to Structure**: Observe how existing pages are structured. Maintaining a uniform appearance makes the wiki easier to navigate.
-
-## 3. Be Clear and Concise
-
-- **Explain Steps Fully**: For example, instead of saying "Edit the config file," say:
-  ```bash
-  Open /etc/config in a text editor of your choice, such as nano or vim.
-     ```
-- **One Idea Per Section**: Stick to one idea per section to avoid overwhelming the reader.
-
-  ## 4. Provide Examples
-
-- **Tip**: Use real commands and expected outputs. For example:
-  ```bash
-  sudo apt update && sudo apt upgrade
-     ```
-- **Tip**: Explain what each command does to enhance understanding.
-
-## 5. Link Generously
-
-- **Note**: Include internal links to related wiki pages (e.g., "See the [Commands](https://wiki.rhinolinux.org/user/pacstall/commands) for details about Pacstall").
-- **Tip**: Use external links to reference trusted sources like official documentation or RFCs.
-
-## 6. Keep It Up-to-Date
-
-- **Warning**: Linux evolves rapidly. Revisit and revise pages regularly. Specify versions where applicable, e.g., "This applies to Rhino 2024.2."
-
-## 7. Use Consistent Formatting
-
-- **Tip**: Follow formatting standards:
-  - **Headings**: Use logical hierarchies (`#`, `##`, `###`).
-  - **Code Blocks**: Properly format terminal commands, configuration files, or scripts.
-  - **Bullet Points**: Use these for lists of options, steps, or pros/cons.
-
-## 8. Encourage Community Collaboration
-
-- **Tip**: Add a "To-Do" section if a page needs updates or expansion. Mark incomplete sections with a note, e.g., "This page is a work in progress—feel free to contribute!"
-
-## 9. Test Everything
-
-- **Warning**: Always run commands and follow steps yourself before publishing. Mistakes in Linux commands can break systems, so double-check every detail.
-
-## 10. Be Friendly and Encouraging
-
-- **Tip**: Use a welcoming tone, especially for beginners. For example:
-  "Don’t worry if this seems complex at first—follow along step by step, and you’ll get there!"
