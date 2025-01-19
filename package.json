@@ -3,9 +3,7 @@
   "version": "0.0.1",
   "description": "Nextra docs template",
   "scripts": {
-    "dev": "concurrently \"pnpm run dev:next\" \"pnpm run dev:tailwind\"",
-    "dev:next": "next dev",
-    "dev:tailwind": "npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
+    "dev": "next dev & tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
     "build": "next build",
     "start": "next start"
   },
