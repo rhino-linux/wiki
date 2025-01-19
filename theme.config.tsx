@@ -46,7 +46,7 @@ const config: DocsThemeConfig = {
   chat: {
     link: 'https://discord.gg/reSvc8Ztk3',
   },
-  docsRepositoryBase: 'https://github.com/rhino-site/rhino-linux-wiki/tree/main',
+  docsRepositoryBase: 'https://github.com/rhino-linux/wiki/tree/main',
   footer: {
     text: 'Rhino Linux Wiki',
   },
