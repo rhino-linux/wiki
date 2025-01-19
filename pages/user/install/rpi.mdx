@@ -7,10 +7,12 @@ import { Callout } from 'nextra/components'
 
 # Raspberry Pi
 
-<Callout type="warning" emoji="⚠">
-  **This page is under construction.** Feel free to contribute!
+| Default User | Password |
+|--------------|----------|
+| rhino        | 1234     |
+
+To install, simply flash the image to an SD card or NVMe drive, and plug it into the device to boot. You may need to run `unxz` on the image first to ensure it is not flashed with corruption.
+
+<Callout emoji="ⓘ">
+  **Important:** The Rhino Setup wizard autostarts by default, but will fail to finish unless an internet connection is established. This only applies to the Desktop image. See [here](./postinst#setup-wizard) for more.
 </Callout>
-
-## Desktop
-
-## Server

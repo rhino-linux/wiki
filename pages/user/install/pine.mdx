@@ -7,12 +7,41 @@ import { Callout } from 'nextra/components'
 
 # Pine64 Devices
 
-<Callout type="warning" emoji="⚠">
-  **This page is under construction.** Feel free to contribute!
+| Default User | Password |
+|--------------|----------|
+| rhino        | 1234     |
+
+<Callout emoji="ⓘ">
+  **Important:** The Rhino Setup wizard autostarts by default, but will fail to finish unless an internet connection is established. See [here](./postinst#setup-wizard) for more.
 </Callout>
 
 ## PinePhone (OG/Pro)
+Tow-Boot or rk2aw are required, as a bootloader is not included in the unified PinePhone/Pro image.
+
+Instructions for Tow-Boot:
+- [PinePhone](https://tow-boot.org/devices/pine64-pinephoneA64.html)
+- [PinePhone Pro](https://tow-boot.org/devices/pine64-pinephonePro.html)
+
+Instructions for rk2aw:
+- [PinePhone Pro](https://xnux.eu/rk2aw/)
+
+Once a bootloader has been installed, the image can be flashed either to an SD card, or directly to the onboard eMMC as each bootloader method allows. You may need to run `unxz` on the image first to ensure it is not flashed with corruption.
 
 ## PineTab
+To install, simply flash the image to an SD card, and plug it into the device to boot. You may need to run `unxz` on the image first to ensure it is not flashed with corruption.
+
+If you want to flash to the onboard eMMC, you will have to do so from an already booted image on an SD. This does not have to be Rhino Linux, but must have access to `dd` the image to the internal drive (`/dev/mmcblk0`).
 
 ## PineTab2
+Installation instructions for the PineTab2 are the same as the original PineTab's above.
+
+### WiFi and Bluetooth
+While the PineTab2 WiFi + Bluetooth driver is still in development, it will be installed in the kernel, but disabled by default. Be warned of its experimental nature. To use it, run the following command, then reboot:
+```bash
+sudo systemctl start pinetab2-wifi-enable
+```
+To turn it back off, run the following command, then reboot:
+```bash
+sudo systemctl start pinetab2-wifi-disable
+```
+These aren’t persistent, so you can’t `systemctl enable` them.
