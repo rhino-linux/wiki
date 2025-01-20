@@ -45,7 +45,7 @@ First, run `pnpm i` to install the dependencies.
 
 Then, run:
 ```bash
-npx concurrently "pnpm dev" "npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
+pnpm run dev
 ```
 This will start the development server at `localhost:3000`, or if port `:3000` is taken up, the next accessible port (e.g. `:3001`).
 This will also keep `tailwindcss` running while you work, so `div` entries in wiki pages and `input.css` changes are properly added.
