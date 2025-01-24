@@ -30,11 +30,11 @@ import { Callout } from 'nextra/components'
 This is what Pacstall records as the name of the built package. Use the following naming schema:
 
 - Keep it lowercase
-- Pacscripts that install from a `deb` file should be called `pkgname-deb`
-- Pacscripts that install from a git repository should be called `pkgname-git`
-- Pacscripts that install an appimage should be called `pkgname-app`
-- Pacscripts that install the binary of the package should be called `pkgname-bin`
-- If a Pacscript does not fall under any of the categories above, use `pkgname`
+- Pacscripts that install from a `deb` file should be called `pkgname-deb`.
+- Pacscripts that install from a git repository should be called `pkgname-git`.
+- Pacscripts that install an appimage should be called `pkgname-app`.
+- Pacscripts that install the binary of the package should be called `pkgname-bin`.
+- If a Pacscript does not fall under any of the categories above, use `pkgname`.
 
 <Callout emoji="ⓘ">
   **Important:** The package suffix (`-deb`, `-git`, etc) must match the filename of the pacscript. If `pkgname="foo-deb"`, the file must be named `foo-deb.pacscript`. If there is no suffix, the file should be named `foo.pacscript`.
@@ -113,7 +113,7 @@ This is the opposite of [incompatible](#incompatible). `compatible` will only bu
 
 #### `pkgdesc`
 
-This is a variable that sets the description of the package. Try to keep it as close as possible to upstream. This variable can be multi-lined for extended descriptions. Do not end the short description (first line) with a period. For example:
+This is a variable that sets the description of the package. Try to keep it as close as possible to upstream. This variable can be multi-lined for extended descriptions. For example:
 
 ```bash
 pkgdesc="Provide limited super user privileges to specific users
@@ -121,6 +121,21 @@ Sudo is a program designed to allow a sysadmin to give limited root
 privileges to users and log root activity. The basic philosophy is to give
 as few privileges as possible but still allow people to get their work done."
 ```
+Some basic rules of thumb for making a description are as follows:
+
+1. Do not begin the description with articles ("*the*", "*a*", "*an*"):
+
+|                              ❌                               |                             ✔️                             |
+|:-------------------------------------------------------------:|:----------------------------------------------------------:|
+| `An end-to-end encrypted note taking alternative to Evernote` | `End-to-end encrypted note taking alternative to Evernote` |
+
+2. Do not begin the description with the name of the package (and do not include the fact it works on Linux, that should be self-evident):
+
+|                                     ❌                                      |                           ✔️                            |
+|:---------------------------------------------------------------------------:|:-------------------------------------------------------:|
+| `Popsicle is a Linux utility for flashing multiple USB devices in parallel` | `Utility for flashing multiple USB devices in parallel` |
+
+3. Do not end short descriptions with periods.
 
 #### `license`
 
@@ -148,11 +163,11 @@ custom_fields=(
 ```
 
 There are a few restrictions on field names:
-- The following cannot be used: `Depends`, `Package`, `Version`, `Architecture`, `Section`, `Priority`, `Essential`, `Vcs-Git`, `Build-Depends`, `Build-Depends-Arch`, `Build-Conflicts`, `Build-Conflicts-Arch`, `Provides`, `Conflicts`, `Breaks`, `Enhances`, `Recommends`, `Suggests`, `Replaces`, `Homepage`, `License`, `Maintainer`, `Uploaders`, `Description`, `Installed-Size`
-- Numbers and spaces are not allowed
-- The first letter must be capital, and all others must be lowercase
-- Hyphens should be used for multiword fields, and follow the same capitalization rule for each word
-- Hyphens cannot be the first or last character in the field name
+- The following cannot be used: `Depends`, `Package`, `Version`, `Architecture`, `Section`, `Priority`, `Essential`, `Vcs-Git`, `Build-Depends`, `Build-Depends-Arch`, `Build-Conflicts`, `Build-Conflicts-Arch`, `Provides`, `Conflicts`, `Breaks`, `Enhances`, `Recommends`, `Suggests`, `Replaces`, `Homepage`, `License`, `Maintainer`, `Uploaders`, `Description`, `Installed-Size`.
+- Numbers and spaces are not allowed.
+- The first letter must be capital, and all others must be lowercase.
+- Hyphens should be used for multiword fields, and follow the same capitalization rule for each word.
+- Hyphens cannot be the first or last character in the field name.
 
 ---
 
@@ -279,8 +294,8 @@ Version guarding dependencies is usually a better method than using `incompatibl
 
 | Problem  | Version Guarding  | Incompatible  | Reason  |
 |:-:|:-:|:-:|---|
-| Outdated dependency on all distro $X versions  | ✅ | ❌ | An adventurous user could install that dependency on their system |
-| Package is intended for certain environments only (distro branding)  | ❌  | ✅  |  The user will now have to take extra steps to disable `incompatible`, meaning they must know about the package intent |
+| Outdated dependency on all distro $X versions  | ✅ | ❌ | An adventurous user could install that dependency on their system. |
+| Package is intended for certain environments only (distro branding)  | ❌  | ✅  |  The user will now have to take extra steps to disable `incompatible`, meaning they must know about the package intent. |
 
 #### `makedepends`
 
