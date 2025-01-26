@@ -1,0 +1,113 @@
+---
+title: Creating Hotfixes
+description: A guide on the creation of hotfixes for the Rhino Hotfix utility.
+---
+
+import { Callout } from 'nextra/components'
+
+# Creating Hotfixes
+
+This page is a guide overviewing how to create and push hotfixes for the [Rhino Hotfix](https://github.com/rhino-linux/hotfix) utility.
+
+## Built-in Variables
+
+| Variable Name | Purpose | Value | Notes |
+|---------------|---------|-------|-------|
+| `SRCDIR` | Staging area for hotfixes | `/tmp/rhino-hotfix/${hotfix}-${published}` | Useful if scripts need to `cd` to locations and return back later |
+| `CARCH`  | Current architecture running | `$(dpkg --print-architecture)` | Useful if scripts require downloads or perform actions based on architecture |
+
+## Standards
+
+Hotfix scripts should conform to the following standards:
+
+### Bash Shebang
+The top of the script should always start with an `env bash` shebang:
+```bash
+#!/usr/bin/env bash
+```
+
+### Hotfix Function
+All script actions should be contained within functions, with the main function always called `hotfix`:
+```bash
+hotfix() {
+  echo "This is a hotfix."
+}
+```
+
+### Localize Everything
+All variables should be localized within the functions:
+```bash
+hotfix() {
+  local names=("test1" "test2")
+
+  for i in "${names[@]}"; do
+    echo "${i}"
+  done
+}
+```
+<Callout type="warning" emoji="⚠">
+  **Warning:** Do not localize `SRCDIR` or `CARCH`, or they will be made inaccessible to the script.
+</Callout>
+<Callout type="error" emoji="⛌">
+  **Danger:** Do not `export` any variables.
+</Callout>
+
+### Cleanup Extra Functions
+If using extra functions, be sure to clean them up with `unset -f` at the end of the `hotfix` function:
+```bash
+hotfix() {
+  local names=("test1" "test2")
+
+  for i in "${names[@]}"; do
+    subprocess "${i}"
+  done
+  unset -f subprocess
+}
+
+subprocess() {
+  echo "${1}"
+}
+```
+<Callout type="warning" emoji="⚠">
+  **Warning:** This is crucial, as if these are not unset, they could bleed over into other scripts.
+</Callout>
+
+### Example Script
+Putting it all together, here is what a hotfix script might look like:
+```bash
+#!/usr/bin/env bash
+
+hotfix() {
+  local names messages
+  names=("test1" "test2")
+  messages=("This is the first message" "This is the second")
+
+  for i in "${!names[@]}"; do
+    subprocess "${names[i]}" "${messages[i]}"
+  done
+  unset -f subprocess
+}
+
+subprocess() {
+  local name="${1}" message="${2}"
+  echo "${name}: ${message}"
+}
+```
+
+## Adding and Publishing
+Once written, the hotfix script must follow these guidelines:
+1. It must be placed in the `scripts/` directory of the [Rhino Hotfix](https://github.com/rhino-linux/hotfix) repository.
+2. While the name of the script can be flexible, it must be relevant to the thing it is fixing.
+3. The name of the script must end with the suffix `.sh`.
+
+Then, from the head of the repository, run:
+```bash
+go run manager.go add -t HOTFIXNAME -d "Some description" -s scripts/SCRIPTNAME.sh
+git add hotfixes.json scripts/SCRIPTNAME.sh
+```
+<Callout emoji="ⓘ">
+  **Important:** `HOTFIXNAME` can only use the following characters: `[A-z]`, `[0-9]`, `[-~._+()]`
+</Callout>
+<Callout type="info" emoji="✎">
+  **Note:** `HOTFIXNAME` and `SCRIPTNAME` do not necessarily need to match. `HOTFIXNAME` will be what is called to run the hotfix (`rhino-hotfix HOTFIXNAME`).
+</Callout>
