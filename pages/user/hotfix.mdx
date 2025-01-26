@@ -7,20 +7,21 @@ description: A utility to apply hotfixes and patches to Rhino Linux.
 
 Rhino Hotfix is a utility designed to distribute and apply hotfixes and patches to existing installations of Rhino Linux.
 
-```
+```bash
 Usage: rhino-hotfix <input> [-h]
+
   Input format:
     <hotfix>[@<metalink>]
 
     <hotfix> (optional):  
-      - `hotfix`: Fetch a specific hotfix.  
-      - `hotfix@<metalink>`: Fetch from a specific repo, branch, or PR.  
+      `hotfix`: Fetch a specific hotfix.  
+      `hotfix@<metalink>`: Fetch from a specific repo, branch, or PR.  
 
     <metalink> (optional):  
-      - `[user/repo]`: Use a specific repo.  
-      - `[user/repo:branch]` or `[:branch]`: Use a specific branch.  
-      - `[user/repo#PR]` or `[#PR]`: Use a specific PR. 
-      Note: only branch or PR can be used, not both. 
+      `[user/repo]`: Use a specific repo.  
+      `[user/repo:branch]` or `[:branch]`: Use a specific branch.  
+      `[user/repo#PR]` or `[#PR]`: Use a specific PR. 
+      NOTE: only branch or PR can be used, not both. 
 
   Examples:
     rhino-hotfix                    # List hotfixes from rhino-linux/hotfix. 
