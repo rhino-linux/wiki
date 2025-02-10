@@ -12,13 +12,10 @@ import { Callout } from 'nextra/components'
 </Callout>
 
 <Callout emoji="ⓘ">
-  **Important:** The global menu plugin in Unicorn's panel has been experiencing sizing issues due to recent XFCE4 updates. We have temporarily mitigated these issues with the CSS block:
-```css
-.-vala-panel-appmenu-core > * { min-width: 1430px; }
+  **Important:** The global menu plugin in Unicorn's panel has been experiencing sizing issues due to recent XFCE4 updates. We have now distributed a fix for this, which can be applied with:
+```sh
+rpk update -y
 ```
-in `~/.config/gtk-3.0/gtk.css`, but this is not a one-size-fixes-all situation.
-
-If the panel appears to be bleeding off of the edge for you even after completing full installation, edit the file mentioned and change `1430px` until it fits your screen properly. You will have to log out and back in for the change to take effect.
 </Callout>
 
 ## Keybinds
