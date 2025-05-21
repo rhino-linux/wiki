@@ -16,9 +16,11 @@ import { Callout } from 'nextra/components'
 | `homedir`       | The home directory of the running user regardless of who calls it. | `~$USER/`                                                        |                                                                                           |
 | `git_pkgver`    | Commit hash of first source key                                    | e.g. `1a2b3c4d` | Only works if `$pkgname` ends in `-git`        |
 | `CARCH`         | Current architecture running                                       | `$ dpkg --print-architecture`                                         |                                                                                           |
+| `AARCH`         | Current architecture running (alternate)                           | `$ echo $HOSTTYPE`                                         | `armhf` uses `armv7h`, and `i386` uses `i686`, instead of `HOSTTYPE`                      |
 | `NCPU`          | User overridable core count                                        | `$ nproc` or set by `${PACSTALL_BUILD_CORES}`                         |                                                                                           |
 | `DISTRO`        | Value of the current (parent) distro and codename                           | `$base:$codename`, such as `ubuntu:jammy` or `debian:bookworm`        | Should only be used inside of packaging functions. Use distro enhanced variables instead. If current distro is based on `ubuntu` or `debian`, this will be the version it is based on. |
 | `CDISTRO`        | Value of the current distro and codename                           | `$base:$codename`, such as `ubuntu:jammy` or `linuxmint:elsie`        | Should only be used inside of packaging functions. Use distro enhanced variables instead, based on `DISTRO`. If current distro is `ubuntu` or `debian`, this will usually be the same as `CDISTRO`. |
+| `KVER`          | Current kernel version running                                     | `$ uname -r`                                     |                                                                                           |
 | `PACSTALL_USER` | User who invokes pacstall                                          | `$ logname 2> /dev/null \|\| echo "${SUDO_USER:-${USER:-$(whoami)}}"`  |                                                                                           |
 
 ---
@@ -168,6 +170,23 @@ There are a few restrictions on field names:
 - The first letter must be capital, and all others must be lowercase.
 - Hyphens should be used for multiword fields, and follow the same capitalization rule for each word.
 - Hyphens cannot be the first or last character in the field name.
+
+#### `limit_kver`
+
+This is a string that is used to declare a kernel version constraint that a pacscript may be built on. The string should be a number prefixed by one of the version constraints `<=` `>=` `=` `<` `>`, such as the following:
+```bash
+limit_kver=">=4.4"
+# OR
+limit_kver="<6.0"
+```
+If intending to use kernel versions to build a package differently based on the version, you should instead use the `KVER` internal variable, like the following:
+```bash
+case "${KVER}" in
+  "4."*) echo "Kernels on 4.x" ;;
+  "5."*) echo "Kernels on 5.x" ;;
+  "6."*) echo "Kernels on 6.x" ;;
+esac
+```
 
 ---
 
