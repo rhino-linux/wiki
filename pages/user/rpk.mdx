@@ -24,23 +24,26 @@ Rhino PKG (command: `rhino-pkg`, symlink: `rpk`) is our custom meta-package mana
 </Callout>
 
 <Callout type="warning" emoji="⚠">
-  **Warning:** Rhino PKG does not handle repositories within package managers. To specifically select from repositories, use the appropriate individual command (e.g. `sudo snap install --classic` for Classic snaps or `sudo flatpak install flathub-beta` for beta flatpaks.)
+  **Warning:** Rhino PKG does not handle repositories within package managers. To specifically select from repositories, use the appropriate individual command (e.g. `sudo snap install --edge` for Edge snaps or `sudo flatpak install flathub-beta` for beta flatpaks.)
 </Callout>
-
-### Commands
-
-| Command | Usage |
-|---------|-------|
-| `update` | This command will upgrade all packages. |
-| `install [input]` | This command will search all available repositories and display a list of packages for you to install. |
-| `remove [input]` | This command will search through your installed apps, and allow for you to uninstall them. |
-| `search [input]` | This command will only search the repositories and display a list of packages matching your input. |
-| `cleanup` | This command will attempt to repair broken dependencies as well as remove unused packages for all repositories on your system. |
 
 ### Flags
 
-| Flag | Usage |
-|------|-------|
-| `--help / -h` | Pass this flag to show the help page. *Can also be done by calling the utility with no inputs or functions*
-| `--description / -d` | By default Rhino Pkg will only display packages that contain the provided input within their name. Use this flag to increase the search range and display packages with the provided input and their description |
-| `-y` | Pass this flag to skip through confirmation prompts. This will only work with `rhino-pkg update` and `rhino-pkg cleanup` |
+| Flag | Description |
+|------|-------------|
+| `--help / -h` | Pass this flag to show the help page. *Can also be done by calling the utility with no inputs or functions*. |
+| `--description / -d` | By default, only packages which match the input query in their name will be displayed. Pass this flag to increase the search range and display packages with the query in their description, and display those descriptions. |
+| `-y` | Pass this flag to skip through confirmation prompts. |
+
+### Commands
+
+| Command | Flags | Variants | Description |
+|---------|-------|----------|-------------|
+| `search [input]` | `--description` | `s (-d)`, `sd` | This command will only search the repositories and display a list of packages matching your input. |
+| `install [input]` | `--description`, `--yes` | `i (-d -y)`, `id (-y)` | This command will search all available repositories and display a list of packages for you to install. |
+| `remove [input]` | `--yes` | `{r\|rm} (-y)` | This command will search through your installed apps, and allow for you to uninstall them. |
+| `cleanup` | `--yes` | `c (-y)` | This command will attempt to repair broken dependencies as well as remove unused packages for all repositories on your system. |
+| `sync` | | `S`, `Ss (-d)`, `Ssd`, `Si (-d -y)`, `Sid (-y)` | This command will update all available repositories. Shorthand can be used in combination with `search` and `install`'s shorthands. |
+| `update` | `--yes` | `{u\|up\|upgrade} (-y)` | This command will update all available repositories and upgrade all packages. |
+| `help` | | `-h`, `--help` | This command shows the help page. |
+
