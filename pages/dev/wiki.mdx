@@ -68,6 +68,19 @@ Best practices for creating and maintaining content on the Rhino Linux wiki.
 - **Tip**: Use a welcoming tone, especially for beginners. For example:
   "Don’t worry if this seems complex at first—follow along step by step, and you’ll get there!"
 
+## How to edit Wiki pages via web browser
+1. Go to https://github.com/rhino-linux/wiki, login and find the page, as an example this page is here https://github.com/rhino-linux/wiki/blob/main/pages/dev/wiki.mdx
+2. Above the file content, click on the pen icon. When asked, click "Fork this repository"
+3. In the text box, make any changes you need to the file.
+4. Above the new content, click Preview to see your changes. *NOTE!* Some formatting will be shown wrong in the preview, If you want to test how it will look, you can paste the code into [stackedit.io](https://stackedit.io/app#) and see how it looks there in reality.
+5. Click Commit changes...
+6. In the "Commit message" field, type a short message that describes the change you made to the file
+7. Click Propose changes
+8. Type a title and description for your pull request.
+9. Click Create pull request.
+
+Read more in [GitHub Docs](https://docs.github.com/en/repositories/working-with-files/managing-files/editing-files#editing-files-in-another-users-repository)
+
 ## Notice Boxes
 
 Notice boxes are an easy way to highlight important information in GitHub Flavored Markdown, using syntax like:
@@ -135,3 +148,163 @@ Now, you can use the following templates:
   **Danger:** Negative potential consequences of an action.
 </Callout>
 ```
+
+## More Markdown examples
+
+### Headers
+**EXAMPLE**
+\# This is a H1 header
+\## This is a H2 header
+\### This is a H3 header
+\#### This is a H4 header
+\##### This is a H5 header
+**OUTPUT**
+# This is a H1 header
+## This is a H2 header
+### This is a H3 header
+#### This is a H4 header
+##### This is a H5 header
+
+----
+## Styling text
+| STYLE | EXAMPLE | OUTPUT |
+|-----------|:-----------:|-----------:|  
+| Bold \** \** | \*\*Bold\*\* | **Bold** |  
+| Italic \* \* | \*Italic\* | *Italic* |  
+| Strikethrough \~~ \~~ | \~\~Strikethrough\~\~ | ~~Strikethrough~~ |  
+| Bold & italic ** ** & _ _ | \*\*Bold & \_italic\_\*\* | **Bold & _italic_** |  
+| All bold & italic \*** \*** | \*\*\*All bold & italic\*\*\* | ***All bold & italic*** |  
+| Subscript \<sub\> \<\/sub\> | This \<sub\>is\<\/sub\> Subscript | This <sub>is</sub> Subscript |  
+| Superscript \<sup\> \<\/sup\> | This \<sup\>is\<\/sup\> Superscript | This <sup>is</sup> Superscript | 
+| Underline \<ins\> \<\/ins\>  | \<ins\>Underline\<\/ins\>  | <ins>Underline</ins>  |  
+
+----
+### Blockquotes
+**EXAMPLE**
+\> Single line quote
+\>> Nested quote
+\>> multiple line
+\>> quote
+**OUTPUT**
+> Single line quote
+>> Nested quote
+>> multiple line
+>> quote
+
+----
+### Quote code in text
+Use single backticks &#96; &#96;
+**EXAMPLE**
+Do &#96;apt update&#96; first
+**OUTPUT**
+Do `apt update` first
+
+----
+### Quote code in block
+Use triple backticks &#96;&#96;&#96; &#96;&#96;&#96;
+**EXAMPLE**
+&#96;&#96;&#96;
+git status
+git add
+git commit
+&#96;&#96;&#96;
+**OUTPUT**
+```
+git status
+git add
+git commit
+```
+
+----
+### Links
+Text in brackets \[ \] and URL in parentheses ( )
+**EXAMPLE**
+Find info in the \[Wiki\](https://wiki.rhinolinux.org/dev/wiki\)
+**OUTPUT**
+Find info in the [Wiki](https://wiki.rhinolinux.org/dev/wiki)
+
+----
+### Images
+Text in brackets !\[alt text\] and URL in parentheses ( =size). `=size` is optional
+**EXAMPLE**
+See picture !\[Rhino favicon\](https://wiki.rhinolinux.org/favicon.svg =50x50)
+**OUTPUT**
+See picture ![Rhino favicon](https://wiki.rhinolinux.org/favicon.svg =50x50)
+
+----
+### Lists
+Unordered list with -, *, or +. Ordered list, precede each line with a number. 
+**EXAMPLE**
+```
+- Rhino
+* Debian
++ Ubuntu
+
+1. Rhino
+2. Debian
+3. Ubuntu
+```
+**OUTPUT**
+- Rhino
+* Debian
++ Ubuntu
+
+1. Rhino
+2. Debian
+3. Ubuntu
+
+To make nested lists, type space characters in front of your nested list item until the list marker character (- or *) lies directly below the first character of the text in the item above it.
+**EXAMPLE**
+```
+1. Rhino
+   * Debian
+     * Ubuntu
+```
+**OUTPUT**
+1. Rhino
+   * Debian
+     * Ubuntu
+
+----
+### Horizontal rules
+Add a line that's a series of dashes - - -. The line above the line containing the - - - must be blank.
+**EXAMPLE**
+```
+Above
+
+----
+Below
+```
+**OUTPUT**
+Above
+
+----
+Below
+
+----
+### Using comments
+You can use comment with \<!--  --\>
+**EXAMPLE**
+\<!-- This is a comment --\>
+**OUTPUT**
+<!-- This is a comment -->
+
+----
+### Ignoring Markdown formatting
+To ignore Markdown formatting for a character use &#92; before the Markdown character.
+**EXAMPLE**
+&#92;<!-- This is a comment --&#92;>
+&#92;# This is NOT a H1 header
+**OUTPUT**
+\<!-- This is a comment --\>
+\# This is NOT a H1 header
+
+To write special characters
+**EXAMPLE**
+Enter `&#92;` to get &#92;
+Enter `&#95;` to get &#95;
+
+----
+### More info
+You can find more info about Markdown formatting in [GitHub Docs](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
+
