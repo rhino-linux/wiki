@@ -1,0 +1,49 @@
+---
+title: How Images are built
+description: Tools used
+---
+
+import { Callout } from 'nextra/components'
+
+## Tools (Build System) Utilized
+
+Inside the `rhino-linux/os` repository is where the production-ready images of RL are made.
+This was originally forked from [Vanilla-OS's ISO builder](https://github.com/Vanilla-OS/live-iso) which is forked from  [Ubuntu Cinnamon's ISO builder](https://github.com/ubuntucinnamon/iso-builder-devel).
+Images are built from scratch thanks to the Debian's [`live-build`](https://salsa.debian.org/live-team/live-build) tool in an automated fashion thanks to shell scripts.
+
+Different branches target different devices such as:
+`Main` generic target,
+`rpi` with Raspberry Pi code,
+and `pinetab` and `pinephone` targeting those respectively.
+
+### GitHub Actions
+
+While it is possible for manual building of each different architecture (e.g. `x86_64`) or type (e.g. `pinetab`),
+this is time consuming, so the team can schedule a [GitHub Workflow that builds all images](./github-actions) in a efficient and repeatable manner.
+
+### Installer
+
+RL primarily uses Calamares, a multi-distribution modular installer. Except for Raspberry Pi and Pine devices where it is unnecessary.
+Compared to Ubuntu's Calamares does not have a dependency on Snap and has the advantage of [being customized](./calamares) with our branding.
+
+### Bootloader
+
+For generic targets, GRUB and isolinux is used, u-Boot for Raspberry Pi targets, and Extlinux to install SYSLINUX to Pinephone and pinetab.
+* GRUB: `etc/config/boatloaders/grub-pc` & https://github.com/rhino-linux/grub/tree/main (branding)
+* Isolinux: `etc/config/boatloaders/isolinux`
+* U-Boot: `scripts/setup-system-boot.sh`
+* Extlinux: `etc/config/boatloaders/extlinux`
+
+<Callout type="info" emoji="✎">
+  **Note:** Some bootloaders may be in other branches, but are unused.
+</Callout>
+
+
+### Package Management
+
+For most things, APT is used, packages installed are under `etc/config/package-lists.calamares`:
+* `desktop.list.chroot_install` (unavailable on Raspberry Pi & Pine devices): Packages installed by Calamares onto system
+* `desktop.list.chroot_live` (unavailable on Raspberry Pi & Pine devices): Packages only in the live environment
+* `pool.list.binary`: Packages on the disk image
+
+Pacstall packages are installed under `etc/config/hooks/live/099-install-custom-apps.chroot`.
