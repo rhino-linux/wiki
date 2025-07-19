@@ -96,15 +96,21 @@ subprocess() {
 
 ## Adding and Publishing
 Once written, the hotfix script must follow these guidelines:
-1. It must be placed in the `scripts/` directory of the [Rhino Hotfix](https://github.com/rhino-linux/hotfix) repository.
+1. It must be placed in the `scripts/active` directory of the [Rhino Hotfix](https://github.com/rhino-linux/hotfix) repository.
 2. While the name of the script can be flexible, it must be relevant to the thing it is fixing.
 3. The name of the script must end with the suffix `.sh`.
 
 Then, from the head of the repository, run:
 ```bash
-go run manager.go add -t HOTFIXNAME -d "Some description" -s scripts/SCRIPTNAME.sh
-git add hotfixes.json scripts/SCRIPTNAME.sh
+go run manager.go add -t HOTFIXNAME -d "Some description" -s SCRIPTNAME.sh
+git add hotfixes.json scripts/active/SCRIPTNAME.sh
 ```
+
+To deprecate a hotfix you can run:
+```bash
+go run manager.go remove -t <HOTFIX NAME> -a <VERSION>
+```
+
 <Callout emoji="ⓘ">
   **Important:** `HOTFIXNAME` can only use the following characters: `[A-z]`, `[0-9]`, `[-~._+()]`
 </Callout>
