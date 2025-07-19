@@ -102,9 +102,15 @@ Once written, the hotfix script must follow these guidelines:
 
 Then, from the head of the repository, run:
 ```bash
-go run manager.go add -t HOTFIXNAME -d "Some description" -s scripts/SCRIPTNAME.sh
-git add hotfixes.json scripts/SCRIPTNAME.sh
+go run manager.go add -t HOTFIXNAME -d "Some description" -s SCRIPTNAME.sh
+git add hotfixes.json scripts/active/SCRIPTNAME.sh
 ```
+
+To deprecate a hotfix you can run:
+```bash
+go run manager.go remove -t <HOTFIX NAME> -a <VERSION>
+```
+
 <Callout emoji="ⓘ">
   **Important:** `HOTFIXNAME` can only use the following characters: `[A-z]`, `[0-9]`, `[-~._+()]`
 </Callout>
