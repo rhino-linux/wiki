@@ -1,8 +1,78 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss' prefix(nx);
 
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap')
+layer(utilities);
+
+@custom-variant dark (&:is(html[class~="dark"] *));
+
+@theme {
+  --text-*: initial;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5rem;
+  --text-btn: 1.15rem;
+  --text-btn--line-height: 1.6rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 2.25rem;
+  --text-4xl: 2.25rem;
+  --text-4xl--line-height: 2.5rem;
+
+  --color-rhino-purple: #8d7be4;
+  --color-neon-purple: #8b00e7;
+  --color-highlighter-purple: #9235ff;
+  --color-dark-purple: #13093c;
+  --color-adwaita-dark: #2d2d2d;
+  --color-off-white: #fefefe;
+  --color-overlay: rgba(15, 0, 20, 0.4);
+  --color-site-400: #19142d;
+  --color-site-300: #231e37;
+  --color-site-200: #373250;
+  --color-site-100: #554b69;
+  --color-unicorn-magenta: #c10080;
+  --color-unicorn-pink: #d404ff;
+  --color-unicorn-purple: #8b00e7;
+  --color-unicorn-dark: #26184c;
+  --color-brand-dark: #2d2d2d44;
+  --color-brand-light: #fefefe11;
+  --color-zrhino-purple: #8d7be4;
+
+  --background-image-blobs: url('/img/blobs.png');
+  --background-image-banner: url('/img/ecosystem.png');
+
+  --shadow-header-box: 2px 4px 10px rgba(40, 30, 45, 1);
+
+  --drop-shadow-header-drop: 2px 4px 10px rgba(40, 30, 45, 1);
+
+  --font-serif: Ubuntu, sans-serif;
+  --font-mono: UbuntuMono, mono;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
 
 @font-face {
   font-family: "Ubuntu";
@@ -45,72 +115,72 @@ p, h1, h2, h3, h4, hr, td, tr, ul, ol, li, a, footer, article, main, .nx-text-el
 }
 
 :is(html[class~=dark] .dark\:nx-border-neutral-800) {
-  @apply !nx-border-site-100/30;
+  @apply nx:border-site-100/30!;
 }
 
 .nx-flex:before {
-  @apply !nx-border-site-100/30;
-  @apply !nx-bg-site-100/30;
+  @apply nx:border-site-100/30!;
+  @apply nx:bg-site-100/30!;
 }
 
 :is(html[class~=dark] footer), :is(html[class~=dark] ul), :is(html[class~=dark] .nx-sticky), :is(html[class~=dark] .nextra-callout), :is(html[class~=dark] [id=__next]), :is(html[class~=dark] .nextra-sidebar-container) {
-  @apply !nx-bg-site-400;
+  @apply nx:bg-site-400!;
 }
 
 .nx-sticky {
-  @apply !nx-shadow-none;
+  @apply nx:shadow-none!;
 }
 
 :is(html[class~=dark] .nextra-nav-container-blur), :is(html[class~=dark] .nx-fixed.nx-z-10) {
-  @apply !nx-sticky;
+  @apply nx:sticky!;
 }
 
 .nextra-callout.nx-border-orange-100 {
-  @apply !nx-text-orange-800;
+  @apply nx:text-orange-800!;
 }
 
 :is(html[class~=dark] .nextra-callout.nx-border-orange-100) {
-  @apply !nx-text-orange-300;
-  @apply !nx-border-orange-400;
+  @apply nx:text-orange-300!;
+  @apply nx:border-orange-400!;
 }
 
 .nextra-callout.nx-border-red-200 {
-  @apply !nx-text-red-800;
+  @apply nx:text-red-800!;
 }
 
 :is(html[class~=dark] .nextra-callout.nx-border-red-200) {
-  @apply !nx-text-red-400;
-  @apply !nx-border-red-500;
+  @apply nx:text-red-400!;
+  @apply nx:border-red-500!;
 }
 
 .nextra-callout.nx-border-blue-200 {
-  @apply !nx-text-blue-800;
+  @apply nx:text-blue-800!;
 }
 
 :is(html[class~=dark] .nextra-callout.nx-border-blue-200) {
-  @apply !nx-text-blue-400;
-  @apply !nx-border-blue-500;
+  @apply nx:text-blue-400!;
+  @apply nx:border-blue-500!;
 }
 
 .nextra-callout.nx-border-yellow-100 {
-  @apply !nx-text-yellow-800;
+  @apply nx:text-yellow-800!;
 }
 
 :is(html[class~=dark] .nextra-callout.nx-border-yellow-100) {
-  @apply !nx-text-yellow-300;
-  @apply !nx-border-yellow-400;
+  @apply nx:text-yellow-300!;
+  @apply nx:border-yellow-400!;
 }
 
 .nx-text-primary-600, .nx-text-primary-800 {
-  @apply !nx-text-highlighter-purple;
+  @apply nx:text-highlighter-purple!;
 }
 
 :is(html[class~=dark] .nx-text-primary-600), :is(html[class~=dark] .nx-text-primary-800) {
-  @apply !nx-text-rhino-purple;
+  @apply nx:text-rhino-purple!;
 }
 
 .nx-mr-2.nx-rounded-t {
-  @apply !nx-ml-2;
+  @apply nx:ml-2!;
 }
 
 code, kbd, samp, pre {
