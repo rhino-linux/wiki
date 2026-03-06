@@ -9,15 +9,15 @@ import { Callout } from 'nextra/components'
 
 ### Built-in Variables
 
-| Variable Name   | Purpose                                                            | Value                                                                 | Notes                                                                                     |
+| Variable Name   | Purpose                                                            | Example Value                                                         | Notes                                                                                     |
 | --------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | `pkgdir`        | Staging area for pacscripts                                        | `/usr/src/pacstall/${pkgname}`                                        |                                                                                           |
 | `srcdir`        | Download area for pacscripts and starting area for functions       | `/tmp/pacstall/${pkgname}~${pkgver}`                                  |                                                                                           |
 | `homedir`       | The home directory of the running user regardless of who calls it. | `~$USER/`                                                        |                                                                                           |
-| `git_pkgver`    | Commit hash of first source key                                    | e.g. `1a2b3c4d` | Only works if `$pkgname` ends in `-git`        |
+| `git_pkgver`    | Commit hash of first source key                                    | e.g. `1a2b3c4d` | Only works if `$pkgname` ends in `-git`.        |
 | `CARCH`         | Current architecture running                                       | `$ dpkg --print-architecture`                                         |                                                                                           |
 | `AARCH`         | Current architecture running (alternate)                           | `$ echo $HOSTTYPE`                                         | `armhf` uses `armv7h`, and `i386` uses `i686`, instead of `HOSTTYPE`                      |
-| `NCPU`          | User overridable core count                                        | `$ nproc` or set by `${PACSTALL_BUILD_CORES}`                         |                                                                                           |
+| `NCPU`          | User overridable core count                                        | `$ nproc` or set by `${PACSTALL_BUILD_CORES}`. | Use this unconditionally in place of `nproc`.                                                                                           |
 | `DISTRO`        | Value of the current (parent) distro and codename                           | `$base:$codename`, such as `ubuntu:jammy` or `debian:bookworm`        | Should only be used inside of packaging functions. Use distro enhanced variables instead. If current distro is based on `ubuntu` or `debian`, this will be the version it is based on. |
 | `CDISTRO`        | Value of the current distro and codename                           | `$base:$codename`, such as `ubuntu:jammy` or `linuxmint:elsie`        | Should only be used inside of packaging functions. Use distro enhanced variables instead, based on `DISTRO`. If current distro is `ubuntu` or `debian`, this will usually be the same as `CDISTRO`. |
 | `KVER`          | Current kernel version running                                     | `$ uname -r`                                     |                                                                                           |
@@ -65,7 +65,7 @@ This array is used to define what architectures your pacscripts will work on. Be
 | Name | Function |
 |------|----------|
 | `any` | Package can be compiled on *any* system, but will only run on the compiled architecture (compiled programs) |
-| `all` | Package can run on *all* systems, regardless of architecture (scripts usually) |
+| `all` | Package can run on *all* systems, regardless of architecture (scripts, platform independent bytecode, etc) |
 
 Two variables, `$CARCH` and `$AARCH` are also available to you, and are linked to the current running architecture. You can get the value that `$CARCH` would be on your system by running `dpkg --print-architecture`, and `$AARCH` by running `echo $HOSTTYPE` (with two exceptions, starred below). These are differentiated in the given list with `CARCH`/`AARCH` (if only one is listed, the variables are equal).
 
@@ -106,7 +106,7 @@ This variable is used to show the homepage/website of the package (if any).
 
 #### `incompatible`
 
-This array is a list of distros/versions that cannot be used to build this package, for example due to outdated dependencies. Elements follow a schema of `$distro:$version`, where either `$distro` or `$version` can be a glob character ('\*'), but not both. `$version` can be a distro name (`jammy`, `noble`, `sid`, etc) or a version number (`22.04`, `16.04`, etc).
+This array is a list of distros/versions that cannot be used to build this package, for example due to outdated dependencies. Elements follow a schema of `$dist:$version`, where either `$dist` or `$version` can be a glob character ('\*'), but not both. `$version` can be a distro name (`jammy`, `noble`, `sid`, etc) or a version number (`22.04`, `16.04`, etc).
 
 #### `compatible`
 
@@ -236,7 +236,7 @@ Extraction method is calculated from the initial url basename and not `dest`, so
 
 If using an archive that contains a `*.tar.*` extension that is not covered by any of the above listed, pacstall will attempt to extract it with the regular `*.tar` method. If pacstall does not recognize the extension, it will not try to extract it. If you do not want to extract a certain source, see [noextract](#noextract).
 
-You may define architecture specific sources like `source_$arch`, and you can define distro sources like `source_$DISTRO`, where `$DISTRO` can be either `ubuntu` or `debian`, or a codename of a release, such as `jammy` or `bookworm`. If you want to combine both a distro and architecture, you may do `source_${DISTRO}_${arch}`. A CI maintained file in [pacstall/pacstall-programs](https://github.com/pacstall/pacstall-programs/blob/master/distrolist) will provide an up-to-date list of the supported releases.
+You may define architecture specific sources like `source_$arch`, and you can define distro sources like `source_$dist`, where `$dist` can be either `ubuntu` or `debian`, or a codename of a release, such as `jammy` or `bookworm`. If you want to combine both a distro and architecture, you may do `source_${dist}_${arch}`. A CI maintained file in [pacstall/pacstall-programs](https://github.com/pacstall/pacstall-programs/blob/master/distrolist) will provide an up-to-date list of the supported releases.
 
 Enhanced arrays can also be used in conjunction with the existing normal arrays, as a way to append. They append in order of increasing specificity:
 
@@ -264,7 +264,7 @@ These sets of arrays are used in relation to [source](#source) and are used to v
 6. `md5sums`
 7. `b2sums`
 
-Along with these sums arrays, the same `$arch` and `$DISTRO` rules from [source](#source) apply.
+Along with these sums arrays, the same `$arch` and `$dist` rules from [source](#source) apply.
 
 If you do not wish to check the hash of a certain file, you may put `SKIP` as the element corresponding to the location of the file in `source`.
 
@@ -286,7 +286,14 @@ Use this array like you would with [nosubmodules](#nosubmodules) except this is 
 
 #### `backup`
 
-In dpkg, files in `/etc` are set as "configuration files", meaning that by default they will not be removed when one runs `apt remove pkg`, but will with `apt purge pkg`. This array should be filled with file paths (without the leading slash), and every file in it will be set as a configuration file. Do not include any files that will be unpacked in `/etc`, as that is already handled by dpkg. There is one special exception you may add to a key, and that is a leading `r:`, which instructs dpkg to **delete** that file on the next upgrade (generally used for outdated config files). If you include `r:` in a key, that file _cannot_ appear in the binary package.
+This array should be filled with file paths (without the leading slash), and every file in it will be set as a configuration file. There is one special exception you may add to a key, and that is a leading `r:`, which instructs dpkg to **delete** that file on the next upgrade (generally used for outdated config files). If you include `r:` in a key, that file *cannot* appear in the binary package, for instance:
+
+```bash
+backup=(
+  'usr/share/myprog/myprog.conf' # Track this as a config file
+  'r:usr/share/myprog/config' # Delete this one!
+)
+```
 
 #### `external_connection`
 
@@ -298,7 +305,7 @@ Because Pacstall runs builds in an isolated environment, internet connection is 
 
 #### `depends`
 
-This is an array used to declare runtime dependencies of a package. As with [source](#source), this array can be enhanced by `$arch` and/or `$DISTRO`. Along with that, you can _also_ add version constraints, which take the following schema:
+This is an array used to declare runtime dependencies of a package. As with [source](#source), this array can be enhanced by `$arch` and/or `$dist`. Along with that, you can _also_ add version constraints, which take the following schema:
 
 1. Any dependency can optionally have the following format:
    1. `pkg>=version`
@@ -335,7 +342,7 @@ If at build time the user decides not to install a package in `optdepends`, it w
 
 #### `pacdeps`
 
-This is an array that is used to declare dependencies on other pacstall packages. Functionally, they will be installed like [makedepends](#makedepends) (before building) and will be logged like [depends](#depends) (required). Unlike the other `*depends` arrays, these **cannot** use version constraints, but may still be enhanced by `$arch` and/or `$DISTRO`.
+This is an array that is used to declare dependencies on other pacstall packages. Functionally, they will be installed like [makedepends](#makedepends) (before building) and will be logged like [depends](#depends) (required). Unlike the other `*depends` arrays, these **cannot** use version constraints, but may still be enhanced by `$arch` and/or `$dist`.
 
 ---
 
@@ -345,32 +352,32 @@ This is an array that is used to declare dependencies on other pacstall packages
 
 This is an array that declares packages that cannot be installed alongside this package. Any package declared in `breaks` can be unpacked alongside this package, but both cannot exist. Essentially, this is what you should use to declare incompatibilities between packages that do _not_ have file path conflicts. 
 
-This array can be enhanced by `$arch` and/or `$DISTRO`.
+This array can be enhanced by `$arch` and/or `$dist`.
 
 #### `conflicts`
 
-This is an array similar to [breaks](#breaks), except it declares that packages _cannot_ be unpacked at the same time, likely due to having files in the same locations.
+This is an array similar to [breaks](#breaks), except it declares that packages *cannot* be unpacked at the same time, likely due to having files in the same locations.
 
-This array can be enhanced by `$arch` and/or `$DISTRO`.
+This array can be enhanced by `$arch` and/or `$dist`.
 
 #### `makeconflicts`
 
 This is an array used to declare packages that cannot be installed on the system at build-time, usually because of a package conflict with a build-time dependency.
 
-This array can be enhanced by `$arch` and/or `$DISTRO`.
+This array can be enhanced by `$arch` and/or `$dist`.
 
 #### `checkconflicts`
 
 This is an array used to declare packages that cannot be installed on the system for testing in the [check](#check) function, usually because of a package conflict with a check dependency.
 
-This array can be enhanced by `$arch` and/or `$DISTRO`.
+This array can be enhanced by `$arch` and/or `$dist`.
 
 #### `replaces`
 This is an array that declares packages that has files [that can be overwritten by this package](https://www.debian.org/doc/debian-policy/ch-relationships#overwriting-files-in-other-packages). This functionality is available only in conjunction with [breaks](#breaks).
 
 If you want to [replace whole packages](https://www.debian.org/doc/debian-policy/ch-relationships#replacing-whole-packages-forcing-their-removal), instead of simply taking over files, you should have `replaces` alongside [conflicts](#conflicts).
 
-This array can be enhanced by `$arch` and/or `$DISTRO`.
+This array can be enhanced by `$arch` and/or `$dist`.
 
 #### `provides`
 
@@ -380,19 +387,19 @@ A list of packages that this package can satisfy as a dependency. For instance, 
 provides=("foobar")
 ```
 
-This array can be enhanced by `$arch` and/or `$DISTRO`.
+This array can be enhanced by `$arch` and/or `$dist`.
 
 #### `recommends`
 
 A list of packages that this package does not depend on, but may receive improved functionality from, and most users would want to have included with their install. Packages marked "Recommends" have stronger weight than packages marked "Suggests", but can still be opted out of, unlike [depends](#depends).
 
-This array can be enhanced by `$arch` and/or `$DISTRO`.
+This array can be enhanced by `$arch` and/or `$dist`.
 
 #### `suggests`
 
 A list of packages that this package does not depend on, but may receive improved functionality from. This is most useful for when building static packages, to use instead of [optdepends](#optdepends), as optdepends that are installed on the system are marked as [depends](#depends).
 
-This array can be enhanced by `$arch` and/or `$DISTRO`.
+This array can be enhanced by `$arch` and/or `$dist`.
 
 #### `enhances`
 
@@ -402,7 +409,7 @@ A list of packages that this package can satisfy as a suggested package or recom
 enhances=("foobar")
 ```
 
-This array can be enhanced by `$arch` and/or `$DISTRO`.
+This array can be enhanced by `$arch` and/or `$dist`.
 
 #### `gives`
 
@@ -415,7 +422,7 @@ gives="foo"
 
 In order to distinguish the pacstall name and the installed package name.
 
-This variable can be enhanced by `$arch` and/or `$DISTRO`. *However*, unlike the arrays, entries do not append, but instead override. They override in order of increasing specificity:
+This variable can be enhanced by `$arch` and/or `$dist`. *However*, unlike the arrays, entries do not append, but instead override. They override in order of increasing specificity:
 
 | order          | variable                    |
 |----------------|-----------------------------|
