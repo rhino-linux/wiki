@@ -1,0 +1,58 @@
+---
+title: Building an image
+description: How to build an image of RL
+---
+
+import { Callout } from 'nextra/components'
+
+## How to get started building Rhino Linux images
+
+<Callout type="warning" emoji="⚠">
+  **Warning:** This can only be built with the latest release of Ubuntu and derivatives such as Rhino Linux!
+</Callout>
+
+<Callout emoji="ⓘ">
+  **Important:** Looking how to do release builds? look at [building using Github Actions](./github-actions)
+</Callout>
+
+### Instructions
+
+First, make sure the proper dependencies are installed:
+```
+sudo apt-get update && sudo apt-get install --reinstall debootstrap mtools dosfstools qemu-user-static binfmt-support dpkg-dev git
+```
+
+The repository can be cloned into by Git (defaulting to the generic branch):
+<Callout emoji="!">
+  **Important:** Depending on the target, clone either the `rpi`, `pinetab`, or `pinephone` branch instead.
+</Callout>
+```
+git clone https://github.com/rhino-linux/os.git && cd ./os
+```
+
+Next, to install the live build dependency:
+```
+sudo dpkg -i debs/live-build_*_all.deb
+```
+
+Unfortunately, live-build has to be patched to support Ubuntu `devel` archives so multiple commands have to be run:
+```
+sudo mv /usr/share/debootstrap/functions functions && sudo patch -i 0002-remove-WRONGSUITE-error.patch && sudo mv functions /usr/share/debootstrap/functions && sudo cp binary_grub-efi /usr/lib/live/build/binary_grub-efi
+```
+
+The last step to get the repository running is making the scripts executable:
+```
+chmod -R +x build.sh etc/auto/config etc/terraform.conf etc/
+```
+
+Finally, images can be made:
+```
+sudo ./build.sh etc/terraform.conf
+```
+
+<Callout type="info" emoji="✎">
+  **Note:** Images can be rebuilt using `sudo ./build.sh etc/terraform.conf`
+</Callout>
+
+The resulting image to flash is found under `builds/[architecture]` where `[architecture]` is either `amd64` or `arm64`.
+The in addition, an SHA256 and SHA512 checksum is created to verify.

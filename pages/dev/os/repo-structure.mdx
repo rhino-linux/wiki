@@ -1,0 +1,35 @@
+---
+title: Structure
+description: Brief repo structure
+---
+
+## [Repository Structure](https://github.com/rhino-linux/os)
+This is subject to change, but here is the general of this repository:
+
+```.
+├── 0002-remove-WRONGSUITE-error.patch -> for devel apt archives
+├── binary_grub-efi -> Modified grub script for RL
+├── build.sh -> Main build script
+├── debs
+│   └── live-build_20220505_all.deb -> Modified for RL
+├── etc
+│   ├── auto
+│   │   └── config -> Is used to setup live-build
+│   ├── config
+│   │   ├── bootloaders -> Stores Bootloader configurations
+│   │   │   ├── grub-pc -> Is used in UEFI boot
+│   │   │   └── isolinux -> Is used in BIOS instead of Grub
+│   │   ├── hooks
+│   │   │   └── live -> Each step (shell script) that live-build runs incrementally from 000 to 999
+│   │   ├── includes.binary -> Media information
+│   │   ├── includes.chroot -> Files that are directly included in media
+│   │   └── package-lists.calamares -> Calamares installer packages
+│   │       ├── desktop.list.chroot_install -> Apt packages to install onto disk
+│   │       ├── desktop.list.chroot_live -> Packages only necessary while booting off a disk image (live boot)
+│   │       └── pool.list.binary -> Packages on media (mostly firmware)
+│   └── terraform.conf -> RL specific distribution information (shouldn't needed to be changed)
+├── LICENSE
+├── README.md
+├── rebuild-list -> Don't worry about this file
+└── ub2r.sh -> Script that converts Ubuntu into Rhino Linux
+```
